@@ -10,13 +10,13 @@ export default class UserSignupPage extends React.Component {   //class componen
         displayName: null,
         password : null,
         passwordRepeat: null,
-        pendingApiCall:false,
+        /*pendingApiCall:false,*/
         errors: {}
     }
     onChange = event => {
-        const {name,value} = event.target;  //object destructuring yaparak name e event.target.name ve value a event.target.value vermiş olduk.
+        const {name,value} = event.target;                  //object destructuring yaparak name e event.target.name ve value a event.target.value vermiş olduk.
         const errors ={...this.state.errors}
-        errors[name] = undefined;           //username cannot be empyt yazısını yazmaya başlayınca kaldırmak için
+        errors[name] = undefined;                           //username cannot be empyt yazısını yazmaya başlayınca kaldırmak için
 
         if(name === 'password' || name === 'passwordRepeat' ){
             if(name==='password' && value !== this.state.passwordRepeat){
@@ -40,16 +40,16 @@ export default class UserSignupPage extends React.Component {   //class componen
             displayName,
             password
         }
-        this.setState({pendingApiCall :true})
+        /*this.setState({pendingApiCall :true})*/
         await signUp(body)
             .then(response => {
-                this.setState({pendingApiCall:false})
+                /*this.setState({pendingApiCall:false})*/
             })
             .catch(error => {
                 if(error.response.data.validationErrors){
                     this.setState({errors : error.response.data.validationErrors});
                 }
-                this.setState({pendingApiCall:false})
+                /*this.setState({pendingApiCall:false})*/
             })
     }
 
@@ -64,8 +64,8 @@ export default class UserSignupPage extends React.Component {   //class componen
                    <YSKInput name={"password"} label={"Password"} error={this.state.errors.password} onChange={this.onChange} type={"password"}></YSKInput>
                    <YSKInput name={"passwordRepeat"} label={"Password Repeat"} error={this.state.errors.passwordRepeat} onChange={this.onChange} type={"password"}></YSKInput>
                    <div className={"text-center"}>
-                       <button disabled={this.state.pendingApiCall || this.state.errors.passwordRepeat !== undefined} className={"btn btn-primary m-3"} onClick={this.onClickSignup}>
-                           {this.state.pendingApiCall ? <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> :  "Sign Up" }
+                       <button disabled={this.props.pendingApiCall || this.state.errors.passwordRepeat !== undefined} className={"btn btn-primary m-3"} onClick={this.onClickSignup}>
+                           {this.props.pendingApiCall ? <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> :  "Sign Up" }
                        </button>
                    </div>
                </form>
