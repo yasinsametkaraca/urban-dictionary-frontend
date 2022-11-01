@@ -1,12 +1,13 @@
 import React, {Component} from 'react';
 import {Link} from "react-router-dom";
+import {Authentication} from "../shared/AuthenticationContext";
 
 class TopBarComp extends Component {  //statefull bir component olcağından class olarak tanımladık. Login işlemlerine göre değişen davranışı olacaktır.
-
+    static contextType=Authentication  //kodu authentication.consumer ile sarmamıza gerek yok
 
     render() {
-        const {isLoggedIn,username,onLogoutSuccess}=this.props
-
+        const {state,onLogoutSuccess,}  = this.context;
+        const {isLoggedIn,username} = state;
         let links = (
             <ul className={"navbar-nav ml-auto"}>
                 <li>
@@ -29,7 +30,6 @@ class TopBarComp extends Component {  //statefull bir component olcağından cla
                 </ul>
             )
         }
-
         return (
             <div className={"shadow-sm mb-3 bg-primary"}>
                 <nav className="navbar navbar-dark bg-primary navbar-expand-sm container flex justify-content-between">
@@ -40,6 +40,7 @@ class TopBarComp extends Component {  //statefull bir component olcağından cla
                 </nav>
             </div>
         )
+
     }
 }
 

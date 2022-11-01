@@ -4,8 +4,10 @@ import {login} from "../services/UserService"
 import axios from "axios";
 import {withApiProgress} from "../shared/ApiProgress";
 import {UserSignupPage} from "./UserSignupPage";
+import {Authentication} from "../shared/AuthenticationContext";
 
 class LoginPage extends Component {   //yine formlu yani state li bir kullanımdan dolayı class component oluşturduk.
+    static contextType = Authentication
     state = {
         username : null,
         password : null,
@@ -22,19 +24,25 @@ class LoginPage extends Component {   //yine formlu yani state li bir kullanımd
     onClickLogin = async (event) => {
         event.preventDefault()
         const {username,password} = this.state;
-        const {onLoginSuccess} =this.props
+        const {onLoginSuccess} =this.context
         const creds ={
             username : username,
-            password : password
+            password : password,
         };
         this.setState({
             error:null
         })
         const {push} = this.props.history  //objec destructuring yaparak push = this.props.history.push yapmış olduk.
         try {
-            await login(creds)
+            const response = await login(creds)
             push("/")  //Router dan props olarak alıyoruz app.js de router sarmaladığı için. eğer login success olursa homepage sayfasına push la.
-            onLoginSuccess(username)
+            const authState = {
+                username:response.data.username,
+                password:password,
+                displayName: response.data.displayName,
+                image: response.data.image
+            }
+            onLoginSuccess(authState)
         }catch (apiErr) {
             this.setState({
                 error : apiErr.response.data.message

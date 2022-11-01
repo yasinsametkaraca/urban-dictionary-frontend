@@ -6,43 +6,25 @@ import HomePage from "./pages/HomePage";
 import { Route, Redirect, Switch, HashRouter} from "react-router-dom";
 import UserPage from "./pages/UserPage";
 import TopBarComp from "./components/TopBarComp";
-
+import {Authentication} from "./shared/AuthenticationContext";
+import userPage from "./pages/UserPage";
 
 class App extends React.Component{
-    state = {
-        isLoggedIn:false,
-        username:undefined
-    }
-    onLoginSuccess = (username) => {
-        this.setState({
-            username: username,
-            isLoggedIn : true
-        })
-    }
-    onLogoutSuccess = () => {
-        this.setState({
-            isLoggedIn: false,
-            username: undefined
-        })
-    }
-
+        static contextType = Authentication
 
       render() {
-        const{isLoggedIn,username} = this.state
+        const isLoggedIn= this.context.state.isLoggedIn
+        const username= undefined
 
           return (
               <div>
                   <HashRouter>  {/*şimdilik her component açılışında backend isteği olmaması için hashrouter yaptık*/}
-                      <TopBarComp username={username} isLoggedIn={isLoggedIn} onLogoutSuccess={this.onLogoutSuccess}></TopBarComp>
+                      <TopBarComp></TopBarComp>
                       <Switch>
                           <Route exact path="/" component={HomePage}></Route>
-                          {!isLoggedIn && (<Route path="/login" component={(reactRouterProps) => {  //login olduktan /logine gitmesini engelledik.
-                              return <LoginPage {...reactRouterProps} onLoginSuccess={this.onLoginSuccess}></LoginPage>  /*reactRouter propslarını logine vermek için*/
-                          }}></Route>)}
+                          {!isLoggedIn && (<Route path="/login" component={LoginPage}></Route>)}
                           <Route path="/signup" component={UserSignupPage}></Route>
-                          <Route path="/user/:username" component={props =>{
-                              return <UserPage {...props} username={username}></UserPage>
-                          }}></Route>                     {/*username dinamik olarak gelicek*/}
+                          <Route path="/user/:username" component={userPage}></Route>                     {/*username dinamik olarak gelicek*/}
                           <Route path="/login" component={LoginPage}></Route>
                           <Redirect to={"/"}></Redirect>                                                  {/*olmayan url girilirse ana sayfaya atar.*/}
                       </Switch>
