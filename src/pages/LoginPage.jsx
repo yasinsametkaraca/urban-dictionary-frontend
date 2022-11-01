@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import YSKInput from "../components/YSKInput";
 import {login} from "../services/UserService"
 import axios from "axios";
+import {withApiProgress} from "../shared/ApiProgress";
+import {UserSignupPage} from "./UserSignupPage";
 
 class LoginPage extends Component {   //yine formlu yani state li bir kullanımdan dolayı class component oluşturduk.
     state = {
@@ -9,7 +11,6 @@ class LoginPage extends Component {   //yine formlu yani state li bir kullanımd
         password : null,
         error: null,
     }
-
     onChange =  (event) => {
         const {name,value} = event.target
         this.setState({
@@ -21,12 +22,19 @@ class LoginPage extends Component {   //yine formlu yani state li bir kullanımd
     onClickLogin = async (event) => {
         event.preventDefault()
         const {username,password} = this.state;
+        const {onLoginSuccess} =this.props
         const creds ={
             username : username,
             password : password
         };
+        this.setState({
+            error:null
+        })
+        const {push} = this.props.history  //objec destructuring yaparak push = this.props.history.push yapmış olduk.
         try {
             await login(creds)
+            push("/")  //Router dan props olarak alıyoruz app.js de router sarmaladığı için. eğer login success olursa homepage sayfasına push la.
+            onLoginSuccess(username)
         }catch (apiErr) {
             this.setState({
                 error : apiErr.response.data.message
@@ -55,8 +63,8 @@ class LoginPage extends Component {   //yine formlu yani state li bir kullanımd
     }
 }
 
-export default LoginPage;
-
+const LoginPageWithApiProgress = withApiProgress(LoginPage,"/api/auth")   //apiProgress componenti userginup componenti içine ekledik. sarmalama yapmamış olduk.
+export default LoginPageWithApiProgress;
 
 //normalde burda tanımlamıştık ama hem loginde hem signup da kullandığımız için ortak bi yerden çekicez. ApiProgress componenti oluşturduk.
 /*componentDidMount() {  //interceptors backend de request response esnasında yapılacak işler için vardır.
