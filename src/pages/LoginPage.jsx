@@ -4,10 +4,8 @@ import {login} from "../services/UserService"
 import axios from "axios";
 import {withApiProgress} from "../shared/ApiProgress";
 import {UserSignupPage} from "./UserSignupPage";
-import {Authentication} from "../shared/AuthenticationContext";
 
 class LoginPage extends Component {   //yine formlu yani state li bir kullanımdan dolayı class component oluşturduk.
-    static contextType = Authentication
     state = {
         username : null,
         password : null,
@@ -24,7 +22,9 @@ class LoginPage extends Component {   //yine formlu yani state li bir kullanımd
     onClickLogin = async (event) => {
         event.preventDefault()
         const {username,password} = this.state;
-        const {onLoginSuccess} =this.context
+        const onLoginSuccess = () => {
+
+        }
         const creds ={
             username : username,
             password : password,

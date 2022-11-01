@@ -6,15 +6,12 @@ import HomePage from "./pages/HomePage";
 import { Route, Redirect, Switch, HashRouter} from "react-router-dom";
 import UserPage from "./pages/UserPage";
 import TopBarComp from "./components/TopBarComp";
-import {Authentication} from "./shared/AuthenticationContext";
 import userPage from "./pages/UserPage";
 
 class App extends React.Component{
-        static contextType = Authentication
 
       render() {
-        const isLoggedIn= this.context.state.isLoggedIn
-        const username= undefined
+        const isLoggedIn= false
 
           return (
               <div>

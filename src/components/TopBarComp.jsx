@@ -1,13 +1,18 @@
 import React, {Component} from 'react';
 import {Link} from "react-router-dom";
-import {Authentication} from "../shared/AuthenticationContext";
+import {connect} from "react-redux";
 
 class TopBarComp extends Component {  //statefull bir component olcağından class olarak tanımladık. Login işlemlerine göre değişen davranışı olacaktır.
-    static contextType=Authentication  //kodu authentication.consumer ile sarmamıza gerek yok
-
+    /*static contextType=Authentication  //kodu authentication.consumer ile sarmamıza gerek yok*/
+    onClickLogout = () => {
+        const action = {  //burda yaptığımız action reducer a düşmelidir.
+            type: "logout-success",
+        }
+        this.props.dispatch(action)
+    }
     render() {
-        const {state,onLogoutSuccess,}  = this.context;
-        const {isLoggedIn,username} = state;
+        console.log(this.props)
+        const {username,isLoggedIn} = this.props   // storedan veriyi çektik.
         let links = (
             <ul className={"navbar-nav ml-auto"}>
                 <li>
@@ -24,7 +29,7 @@ class TopBarComp extends Component {  //statefull bir component olcağından cla
                     <li>
                         <Link className={"nav-link"} to={"/user/"+username}>{username}</Link>
                     </li>
-                    <li onClick={onLogoutSuccess}>
+                    <li onClick={this.onClickLogout}>
                         <Link className={"nav-link"} to="/login">Logout</Link>
                     </li>
                 </ul>
@@ -40,8 +45,14 @@ class TopBarComp extends Component {  //statefull bir component olcağından cla
                 </nav>
             </div>
         )
-
     }
 }
 
-export default TopBarComp;
+
+const mapStateToProps = (store) => {
+    return {
+        isLoggedIn: store.isLoggedIn,
+        username: store.username
+    }
+}
+export default connect(mapStateToProps)(TopBarComp) ;
