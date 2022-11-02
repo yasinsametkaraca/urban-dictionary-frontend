@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
 import YSKInput from "../components/YSKInput";
 import {login} from "../services/UserService"
-import axios from "axios";
 import {withApiProgress} from "../shared/ApiProgress";
-import {UserSignupPage} from "./UserSignupPage";
+import {connect} from "react-redux"
+import  {loginSuccess} from "../store/authActions";
 
 class LoginPage extends Component {   //yine formlu yani state li bir kullanımdan dolayı class component oluşturduk.
     state = {
@@ -22,9 +22,6 @@ class LoginPage extends Component {   //yine formlu yani state li bir kullanımd
     onClickLogin = async (event) => {
         event.preventDefault()
         const {username,password} = this.state;
-        const onLoginSuccess = () => {
-
-        }
         const creds ={
             username : username,
             password : password,
@@ -42,7 +39,7 @@ class LoginPage extends Component {   //yine formlu yani state li bir kullanımd
                 displayName: response.data.displayName,
                 image: response.data.image
             }
-            onLoginSuccess(authState)
+            this.props.onLoginSuccess(authState)
         }catch (apiErr) {
             this.setState({
                 error : apiErr.response.data.message
@@ -72,7 +69,23 @@ class LoginPage extends Component {   //yine formlu yani state li bir kullanımd
 }
 
 const LoginPageWithApiProgress = withApiProgress(LoginPage,"/api/auth")   //apiProgress componenti userginup componenti içine ekledik. sarmalama yapmamış olduk.
-export default LoginPageWithApiProgress;
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        onLoginSuccess : (authState) => {
+            return dispatch(loginSuccess(authState))
+    }
+    }
+}
+
+export default connect(null,mapDispatchToProps)(LoginPageWithApiProgress);
+
+
+
+
+
+
+
 
 //normalde burda tanımlamıştık ama hem loginde hem signup da kullandığımız için ortak bi yerden çekicez. ApiProgress componenti oluşturduk.
 /*componentDidMount() {  //interceptors backend de request response esnasında yapılacak işler için vardır.
