@@ -1,16 +1,12 @@
-import React, {useContext} from 'react';
+import React from 'react';
 import {Link} from "react-router-dom";
 import {connect} from "react-redux";
 import {logoutSuccess} from "../store/authActions";
-import {Authentication} from "../shared/AuthenticationContext";
 
 const TopBarComp = (props) => {
 
-    const context = useContext(Authentication);
+    const {username,isLoggedIn,onLogoutSuccess} = props   // storedan veriyi çektik.
 
-    /*const {username,isLoggedIn,onLogoutSuccess} = props   // storedan veriyi çektik.*/
-    const {onLogoutSuccess,state} = context
-    const {username,isLoggedIn} = state
     let links = (
         <ul className={"navbar-nav ml-auto"}>
             <li>
@@ -45,8 +41,6 @@ const TopBarComp = (props) => {
     )
 }
 
-
-/*
 const mapStateToProps = (store) => {
     return {
         isLoggedIn: store.isLoggedIn,
@@ -60,5 +54,4 @@ const mapDispatchToProps = dispatch => {   //direk kullanmak için.
         }
     }
 }
-export default connect(mapStateToProps,mapDispatchToProps)(TopBarComp) ;*/
-export default TopBarComp
+export default connect(mapStateToProps,mapDispatchToProps)(TopBarComp) ;
