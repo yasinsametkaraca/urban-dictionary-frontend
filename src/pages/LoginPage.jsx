@@ -4,12 +4,12 @@ import {withApiProgress} from "../shared/ApiProgress";
 import {connect} from "react-redux"
 import {loginHandler} from "../store/authActions";
 
-class LoginPage extends Component {   //yine formlu yani state li bir kullanımdan dolayı class component oluşturduk.
-    state = {
+const LoginPage = () => {
+    /*state = {
         username : null,
         password : null,
         error: null,
-    }
+    }*/
     onChange =  (event) => {
         const {name,value} = event.target
         this.setState({
