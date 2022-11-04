@@ -1,64 +1,51 @@
-import React, {Component} from 'react';
+import React, {useEffect, useState} from 'react';
 import YSKInput from "../components/YSKInput";
 import {withApiProgress} from "../shared/ApiProgress";
 import {connect} from "react-redux"
 import {loginHandler} from "../store/authActions";
 
-const LoginPage = () => {
-    /*state = {
-        username : null,
-        password : null,
-        error: null,
-    }*/
-    onChange =  (event) => {
-        const {name,value} = event.target
-        this.setState({
-            [name]: value,
-            error: null  //formda bişey girilince hata mesajını kaldır.
-        })
-    }
+const LoginPage = (props) => {
 
-    onClickLogin = async (event) => {
+    const [username, setUsername] = useState();
+    const [password, setPassword] = useState();
+    const [error, setError] = useState();
+
+    useEffect(() => {                                                                  /* UseEffect bir etki olduğunda tetiklenir. ilk parametre çağrılıcak fonksiyon, ikinci parametre hangi attribute değişikliğinde bu fonksiyon çağrılsın (bu fonksiyonun tetiklenmesini sağlayan dependencyler ne olsun).*/
+        setError(undefined)
+    },[username,password])                                                              //username ve password değişirse erroru undefined yap.
+
+    const onClickLogin = async (event) => {
         event.preventDefault()
-        const {username,password} = this.state;
-        const creds ={
+        const credentials ={
             username : username,
             password : password,
         };
-        this.setState({
-            error:null
-        })
-        const {history,dispatch} = this.props
-        const {push} = history                                                                       //object destructuring yaparak push = this.props.history.push yapmış olduk.
+        setError(undefined)
+        const {history,dispatch} = props
+        const {push} = history                                                                       //object destructuring yaparak push = props.history.push yapmış olduk.
         try {
-            await dispatch(loginHandler(creds))                                                     //hem api call yapıp hem de redux actionu yaptık.(Asenkron hareket olduğu içi thunk kullandık)
+            await dispatch(loginHandler(credentials))                                                     //hem api call yapıp hem de redux actionu yaptık.(Asenkron hareket olduğu içi thunk kullandık)
             push("/")                                                                               //Router dan props olarak alıyoruz app.js de router sarmaladığı için. eğer login success olursa homepage sayfasına push la.
         }catch (apiErr) {
-            this.setState({
-                error : apiErr.response.data.message
-            })
+            setError(apiErr.response.data.message)
         }
     }
+    const {pendingApiCall} = props
+    const loginButtonEnabled = username && password;
 
-    render() {
-
-        const loginButtonEnabled = this.state.username && this.state.password;
-        //const {username,password,error} = this.state  //böyle yaparak aşağıda direk username diyerek kullanabiliriz. ama ben daha iyi anlaşılması için böyle bırakıcam
-
-        return (
-            <div className="container w-50">
-                <form className={""}>
-                    <h1 className={"text-center"}>Login</h1>
-                    <YSKInput label={"Username"} name={"username"} onChange={this.onChange} ></YSKInput>
-                    <YSKInput label={"Password"} name={"password"} type={"password"} onChange={this.onChange}></YSKInput>
-                    {this.state.error && <div className="alert alert-danger" role="alert">Username or password is incorrect</div>} {/*error varsa göster*/}
-                    <div className={" text-center"}>
-                        <button disabled={!loginButtonEnabled || this.props.pendingApiCall} onClick={this.onClickLogin} className={"btn btn-primary m-3"}> {this.props.pendingApiCall ? <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> :  "Login" }</button>
-                    </div>
-                </form>
-            </div>
-        );
-    }
+    return (
+        <div className="container w-50">
+            <form className={""}>
+                <h1 className={"text-center"}>Login</h1>
+                <YSKInput label={"Username"} onChange={ (event) => setUsername(event.target.value) } ></YSKInput>                      {/*input içerisindeki değeri username e ata.*/}
+                <YSKInput label={"Password"} type={"password"} onChange={ (event) => setPassword(event.target.value) } ></YSKInput>
+                {error && <div className="alert alert-danger" role="alert">Username or password is incorrect</div>} {/*error varsa göster*/}
+                <div className={" text-center"}>
+                    <button disabled={!loginButtonEnabled || pendingApiCall} onClick={onClickLogin} className={"btn btn-primary m-3"}> {pendingApiCall ? <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> :  "Login" }</button>
+                </div>
+            </form>
+        </div>
+    );
 }
 
 const LoginPageWithApiProgress = withApiProgress(LoginPage,"/api/auth")   //apiProgress componenti userginup componenti içine ekledik. sarmalama yapmamış olduk.
