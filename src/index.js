@@ -5,14 +5,16 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { Provider} from "react-redux";
 import configureStore from "./store/configureStore";
-
+import AuthenticationContext from "./shared/AuthenticationContext";
 
 
 const store = configureStore()
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <Provider store={store}>
-        <App />
+        <AuthenticationContext>
+            <App />
+        </AuthenticationContext>
     </Provider>
 );
 
