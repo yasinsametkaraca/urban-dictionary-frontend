@@ -1,9 +1,8 @@
 import React, {Component} from 'react';
 import YSKInput from "../components/YSKInput";
-import {login} from "../services/UserService"
 import {withApiProgress} from "../shared/ApiProgress";
 import {connect} from "react-redux"
-import  {loginSuccess} from "../store/authActions";
+import {loginHandler} from "../store/authActions";
 
 class LoginPage extends Component {   //yine formlu yani state li bir kullanımdan dolayı class component oluşturduk.
     state = {
@@ -29,17 +28,11 @@ class LoginPage extends Component {   //yine formlu yani state li bir kullanımd
         this.setState({
             error:null
         })
-        const {push} = this.props.history  //objec destructuring yaparak push = this.props.history.push yapmış olduk.
+        const {history,dispatch} = this.props
+        const {push} = history                                                                       //object destructuring yaparak push = this.props.history.push yapmış olduk.
         try {
-            const response = await login(creds)
-            push("/")  //Router dan props olarak alıyoruz app.js de router sarmaladığı için. eğer login success olursa homepage sayfasına push la.
-            const authState = {
-                username:response.data.username,
-                password:password,
-                displayName: response.data.displayName,
-                image: response.data.image
-            }
-            this.props.onLoginSuccess(authState)
+            await dispatch(loginHandler(creds))                                                     //hem api call yapıp hem de redux actionu yaptık.(Asenkron hareket olduğu içi thunk kullandık)
+            push("/")                                                                               //Router dan props olarak alıyoruz app.js de router sarmaladığı için. eğer login success olursa homepage sayfasına push la.
         }catch (apiErr) {
             this.setState({
                 error : apiErr.response.data.message
@@ -70,15 +63,15 @@ class LoginPage extends Component {   //yine formlu yani state li bir kullanımd
 
 const LoginPageWithApiProgress = withApiProgress(LoginPage,"/api/auth")   //apiProgress componenti userginup componenti içine ekledik. sarmalama yapmamış olduk.
 
-const mapDispatchToProps = (dispatch) => {
+/*const mapDispatchToProps = (dispatch) => {
     return {
         onLoginSuccess : (authState) => {
             return dispatch(loginSuccess(authState))
     }
     }
-}
+}*/
 
-export default connect(null,mapDispatchToProps)(LoginPageWithApiProgress);
+export default connect()(LoginPageWithApiProgress);
 
 
 
