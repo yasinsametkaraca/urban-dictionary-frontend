@@ -1,5 +1,5 @@
 import * as ACTIONS from "./Constants"
-import {login} from "../services/UserService";
+import {login,signUp} from "../services/UserService";
 
 export const logoutSuccess = () => {
     return {  //burda yaptığımız action reducer a düşmelidir.
@@ -25,5 +25,13 @@ export const loginHandler = (credentials) => {                                  
         dispatch(loginSuccess(authState))
         return response
     }
-
 }
+export const signUpHandler = (signUpBody) => {                              //sign up isteği ile hem login olduk hem signup olduk.
+    return async (dispatch) => {
+        const response = await signUp(signUpBody)
+        await dispatch(loginHandler(signUpBody))
+        return response
+    }
+}
+
+

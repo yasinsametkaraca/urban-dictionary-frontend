@@ -2,6 +2,8 @@ import React from 'react';
 import {signUp} from "../services/UserService";
 import YSKInput from "../components/YSKInput";
 import {withApiProgress} from "../shared/ApiProgress";
+import {loginHandler, signUpHandler} from "../store/authActions";
+import {connect} from "react-redux";
 
 
 export class UserSignupPage extends React.Component {   //class componeneti olarak oluşturduk çünkü içirisinde form olucak yani statler olmalıdır.
@@ -35,23 +37,23 @@ export class UserSignupPage extends React.Component {   //class componeneti olar
     }
     onClickSignup = async event => {
         event.preventDefault();
-        const {username,displayName,password} = this.state;
+        const {history,dispatch} = this.props
+        const {push} = history
+
+        const {username, displayName, password} = this.state;
         const body = {
             username,
             displayName,
             password
         }
-        /*this.setState({pendingApiCall :true})*/
-        await signUp(body)
-            .then(response => {
-                /*this.setState({pendingApiCall:false})*/
-            })
-            .catch(error => {
-                if(error.response.data.validationErrors){
-                    this.setState({errors : error.response.data.validationErrors});
-                }
-                /*this.setState({pendingApiCall:false})*/
-            })
+        try {
+            await dispatch(signUpHandler(body));  //burdan authActiona ordan authActions da loginSuccess çalışır. ordan authReducera gider sonra redux state güncellenir.
+            push("/")
+        } catch (error) {
+            if (error.response.data.validationErrors) {
+                this.setState({errors: error.response.data.validationErrors});
+            }
+        }
     }
 
     render() {
@@ -74,8 +76,22 @@ export class UserSignupPage extends React.Component {   //class componeneti olar
         )
     }
 }
-const UserSignupPageWithApiProgress = withApiProgress(UserSignupPage,"/api/users")   //apiProgress componenti userginup componenti içine ekledik. sarmalama yapmamış olduk.
-export default UserSignupPageWithApiProgress;
+const UserSignupPageWithApiProgress = withApiProgress(UserSignupPage,"/api/users")   //apiProgress componenti usersignup componenti içine ekledik.
+export default connect()(UserSignupPageWithApiProgress);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /*
 onChangeUsername = event => {
