@@ -1,80 +1,87 @@
-import React from 'react';
-import {signUp} from "../services/UserService";
+import React, {useState} from 'react';
 import YSKInput from "../components/YSKInput";
 import {withApiProgress} from "../shared/ApiProgress";
-import {loginHandler, signUpHandler} from "../store/authActions";
+import {signUpHandler} from "../store/authActions";
 import {connect} from "react-redux";
 
+const UserSignupPage = (props) => {
+    const [form,setForm] = useState({
+        username:null,
+        displayName:null,
+        password:null,
+        passwordRepeat:null
+    })
+    const [errors, setErrors] = useState({                                                         //errors değerinin başlangıç değerini boş bir object yaptık
+        username:undefined,
+        displayName:undefined,
+        password:undefined,
+    });
 
-export class UserSignupPage extends React.Component {   //class componeneti olarak oluşturduk çünkü içirisinde form olucak yani statler olmalıdır.
-
-    state = {
-        username : null,
-        displayName: null,
-        password : null,
-        passwordRepeat: null,
-        /*pendingApiCall:false,*/
-        errors: {}
-    }
-    onChange = event => {
-        const {name,value} = event.target;                  //object destructuring yaparak name e event.target.name ve value a event.target.value vermiş olduk.
-        const errors ={...this.state.errors}
-        errors[name] = undefined;                           //username cannot be empyt yazısını yazmaya başlayınca kaldırmak için
-
-        if(name === 'password' || name === 'passwordRepeat' ){
-            if(name==='password' && value !== this.state.passwordRepeat){
-                errors.passwordRepeat = "Passwords do not match"
-            }else if(name==='passwordRepeat' && value !== this.state.password){
-                errors.passwordRepeat = "Passwords do not match"
+    const onChange = event => {                                                                             //her input değişikliğinde bu fonksiyon çalışıcak
+        const {name,value} = event.target;                                                                  //object destructuring yaparak name e event.target.name ve value a event.target.value vermiş olduk.}
+        const differentErrorsReference =  {...errors}                                                       //farklı referans değerini alınca state güncellenir. yani yeni bir object olmalıdır. bu yüzden errors un kopyasını aldık.(yani referansını değiştirdik.)
+        differentErrorsReference[name] = undefined;                                                         //Hata sonrası yazdığımızda errorun kaybolması için error değişkenindeki değerini temizledik.
+        /*if(name === 'password' || name === 'passwordRepeat' ){
+            if(name==='password' && value !== form.passwordRepeat){
+                differentErrorsReference.passwordRepeat = "Passwords do not match"
+            }else if(name==='passwordRepeat' && value !== form.password){
+                differentErrorsReference.passwordRepeat = "Passwords do not match"
             }else {
-                errors.passwordRepeat = undefined
+                differentErrorsReference.passwordRepeat = undefined
             }
-        }
-        this.setState({
-            [name]: value,
-            errors
+        }*/
+        setErrors(differentErrorsReference)
+        setForm((previousForm) => {                                                                //SetForm fonksiyon şeklinde olursa parametrede önceki form bilgisini alır yeni formu return etmemizi ister. Yeni bir kopya oluşturmak yerine bu yolla da yapılabilir.
+           return {
+               ...previousForm,                                                                              //önceki formun kopyasını alırız.
+               [name] : value                                                                                //o an da değişmekte olan fielde yeni value yi veririz.
+           }
         })
     }
-    onClickSignup = async event => {
+    const onClickSignup = async event => {
         event.preventDefault();
-        const {history,dispatch} = this.props
+        const {history,dispatch} = props
         const {push} = history
 
-        const {username, displayName, password} = this.state;
+        const {username, displayName, password} = form
         const body = {
             username,
             displayName,
             password
         }
         try {
-            await dispatch(signUpHandler(body));  //burdan authActiona ordan authActions da loginSuccess çalışır. ordan authReducera gider sonra redux state güncellenir.
+            await dispatch(signUpHandler(body));                                                                //burdan authActiona ordan authActions da loginSuccess çalışır. ordan authReducera gider sonra redux state güncellenir.
             push("/")
         } catch (error) {
             if (error.response.data.validationErrors) {
-                this.setState({errors: error.response.data.validationErrors});
+                setErrors(error.response.data.validationErrors)
             }
         }
     }
 
-    render() {
-        return (
-
-           <div className={"container"}>
-               <form>
-                   <h1 className={"text-center"}>Sign Up</h1>
-                   <YSKInput name={"username"} label={"Username"} error={this.state.errors.username} onChange={this.onChange}></YSKInput>
-                   <YSKInput name={"displayName"} label={"Display Name"} error={this.state.errors.displayName} onChange={this.onChange}></YSKInput>
-                   <YSKInput name={"password"} label={"Password"} error={this.state.errors.password} onChange={this.onChange} type={"password"}></YSKInput>
-                   <YSKInput name={"passwordRepeat"} label={"Password Repeat"} error={this.state.errors.passwordRepeat} onChange={this.onChange} type={"password"}></YSKInput>
-                   <div className={"text-center"}>
-                       <button disabled={this.props.pendingApiCall || this.state.errors.passwordRepeat !== undefined} className={"btn btn-primary m-3"} onClick={this.onClickSignup}>
-                           {this.props.pendingApiCall ? <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> :  "Sign Up" }
-                       </button>
-                   </div>
-               </form>
-           </div>
-        )
-    }
+    /*const usernameError= errors.username*/
+    const {username:usernameError,displayName:displayNameError,password:passwordError} = errors                  //username i usernameError değişkeniyle kullanacağımızı belirtiyoruz.
+    const {pendingApiCall} = props
+    let passwordRepeatError;                                                                                     //render öncesi passwordErroru yakaladık. tekrar terkar render edilmesini istemedik.
+        if(form.password!==form.passwordRepeat){
+            passwordRepeatError = "Passwords do not match"
+        }
+    return (
+       <div className={"container"}>
+           <form>
+               <h1 className={"text-center"}>Sign Up</h1>
+               <YSKInput name={"username"} label={"Username"} error={usernameError} onChange={onChange}></YSKInput>
+               <YSKInput name={"displayName"} label={"Display Name"} error={displayNameError} onChange={onChange}></YSKInput>
+               <YSKInput name={"password"} label={"Password"} error={passwordError} onChange={onChange} type={"password"}></YSKInput>
+               <YSKInput name={"passwordRepeat"} label={"Password Repeat"} error={passwordRepeatError} onChange={onChange} type={"password"}></YSKInput>
+               <div className={"text-center"}>
+                   <button disabled={pendingApiCall || passwordRepeatError !== undefined} className={"btn btn-primary m-3"} onClick={onClickSignup}>
+                       {pendingApiCall ? <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> :  "Sign Up" }
+                   </button>
+               </div>
+           </form>
+       </div>
+    )
 }
 const UserSignupPageWithApiProgress = withApiProgress(UserSignupPage,"/api/users")   //apiProgress componenti usersignup componenti içine ekledik.
 export default connect()(UserSignupPageWithApiProgress);

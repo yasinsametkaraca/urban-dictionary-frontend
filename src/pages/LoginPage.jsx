@@ -49,7 +49,6 @@ const LoginPage = (props) => {
 }
 
 const LoginPageWithApiProgress = withApiProgress(LoginPage,"/api/auth")   //apiProgress componenti userginup componenti içine ekledik. sarmalama yapmamış olduk.
-
 /*const mapDispatchToProps = (dispatch) => {
     return {
         onLoginSuccess : (authState) => {
@@ -57,7 +56,6 @@ const LoginPageWithApiProgress = withApiProgress(LoginPage,"/api/auth")   //apiP
     }
     }
 }*/
-
 export default connect()(LoginPageWithApiProgress);
 
 
