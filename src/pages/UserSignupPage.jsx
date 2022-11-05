@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
 import YSKInput from "../components/YSKInput";
-import {withApiProgress} from "../shared/ApiProgress";
+import {useApiProgress} from "../shared/ApiProgress";
 import {signUpHandler} from "../store/authActions";
-import {connect} from "react-redux";
+import {useDispatch} from "react-redux";
 
 const UserSignupPage = (props) => {
     const [form,setForm] = useState({
@@ -16,20 +16,12 @@ const UserSignupPage = (props) => {
         displayName:undefined,
         password:undefined,
     });
+    const dispatch = useDispatch()
 
     const onChange = event => {                                                                             //her input değişikliğinde bu fonksiyon çalışıcak
         const {name,value} = event.target;                                                                  //object destructuring yaparak name e event.target.name ve value a event.target.value vermiş olduk.}
         const differentErrorsReference =  {...errors}                                                       //farklı referans değerini alınca state güncellenir. yani yeni bir object olmalıdır. bu yüzden errors un kopyasını aldık.(yani referansını değiştirdik.)
         differentErrorsReference[name] = undefined;                                                         //Hata sonrası yazdığımızda errorun kaybolması için error değişkenindeki değerini temizledik.
-        /*if(name === 'password' || name === 'passwordRepeat' ){
-            if(name==='password' && value !== form.passwordRepeat){
-                differentErrorsReference.passwordRepeat = "Passwords do not match"
-            }else if(name==='passwordRepeat' && value !== form.password){
-                differentErrorsReference.passwordRepeat = "Passwords do not match"
-            }else {
-                differentErrorsReference.passwordRepeat = undefined
-            }
-        }*/
         setErrors(differentErrorsReference)
         setForm((previousForm) => {                                                                //SetForm fonksiyon şeklinde olursa parametrede önceki form bilgisini alır yeni formu return etmemizi ister. Yeni bir kopya oluşturmak yerine bu yolla da yapılabilir.
            return {
@@ -40,7 +32,7 @@ const UserSignupPage = (props) => {
     }
     const onClickSignup = async event => {
         event.preventDefault();
-        const {history,dispatch} = props
+        const {history} = props
         const {push} = history
 
         const {username, displayName, password} = form
@@ -61,7 +53,7 @@ const UserSignupPage = (props) => {
 
     /*const usernameError= errors.username*/
     const {username:usernameError,displayName:displayNameError,password:passwordError} = errors                  //username i usernameError değişkeniyle kullanacağımızı belirtiyoruz.
-    const {pendingApiCall} = props
+    const pendingApiCall = useApiProgress("/api/users")
     let passwordRepeatError;                                                                                     //render öncesi passwordErroru yakaladık. tekrar terkar render edilmesini istemedik.
         if(form.password!==form.passwordRepeat){
             passwordRepeatError = "Passwords do not match"
@@ -83,8 +75,8 @@ const UserSignupPage = (props) => {
        </div>
     )
 }
-const UserSignupPageWithApiProgress = withApiProgress(UserSignupPage,"/api/users")   //apiProgress componenti usersignup componenti içine ekledik.
-export default connect()(UserSignupPageWithApiProgress);
+
+export default UserSignupPage
 
 
 
@@ -129,3 +121,13 @@ onChangePasswordRepeat = event => {
     <input className={this.state.errors.username ? "form-control is-invalid" : "form-control"} name={"username"} onChange={this.onChange}></input>
     <div className={"invalid-feedback"}>{this.state.errors.username}</div>
 </div>*/
+
+/*if(name === 'password' || name === 'passwordRepeat' ){
+            if(name==='password' && value !== form.passwordRepeat){
+                differentErrorsReference.passwordRepeat = "Passwords do not match"
+            }else if(name==='passwordRepeat' && value !== form.password){
+                differentErrorsReference.passwordRepeat = "Passwords do not match"
+            }else {
+                differentErrorsReference.passwordRepeat = undefined
+            }
+        }*/

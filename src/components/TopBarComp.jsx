@@ -1,11 +1,20 @@
 import React from 'react';
 import {Link} from "react-router-dom";
-import {connect} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {logoutSuccess} from "../store/authActions";
 
 const TopBarComp = (props) => {
 
-    const {username,isLoggedIn,onLogoutSuccess} = props   // storedan veriyi çektik.
+    const reduxState = useSelector((store) => {                                                  //Redux storedan state verisini çektik. Bunun için useSelector kullanılır.
+        return {
+            isLoggedIn: store.isLoggedIn,
+            username: store.username
+        }
+    })
+    const {username,isLoggedIn} = reduxState
+
+    const dispatch = useDispatch()                                                                        //reduxtan actionu çektik. bunun için useDispatch kullandık.
+    const onLogoutSuccess = () => {dispatch(logoutSuccess())}
 
     let links = (
         <ul className={"navbar-nav ml-auto"}>
@@ -40,8 +49,15 @@ const TopBarComp = (props) => {
         </div>
     )
 }
+export default TopBarComp;
 
-const mapStateToProps = (store) => {
+
+
+
+
+
+
+/*const mapStateToProps = (store) => {
     return {
         isLoggedIn: store.isLoggedIn,
         username: store.username
@@ -54,4 +70,4 @@ const mapDispatchToProps = dispatch => {   //direk kullanmak için.
         }
     }
 }
-export default connect(mapStateToProps,mapDispatchToProps)(TopBarComp) ;
+export default connect(mapStateToProps,mapDispatchToProps)(TopBarComp) ;*/

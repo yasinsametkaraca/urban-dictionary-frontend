@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import YSKInput from "../components/YSKInput";
-import {withApiProgress} from "../shared/ApiProgress";
-import {connect} from "react-redux"
+import {useApiProgress} from "../shared/ApiProgress";
+import { useDispatch} from "react-redux"
 import {loginHandler} from "../store/authActions";
 
 const LoginPage = (props) => {
@@ -9,6 +9,7 @@ const LoginPage = (props) => {
     const [username, setUsername] = useState();
     const [password, setPassword] = useState();
     const [error, setError] = useState();
+    const dispatch = useDispatch()                                                           //redux kullanabilmek için.
 
     useEffect(() => {                                                                  /* UseEffect bir etki olduğunda tetiklenir. ilk parametre çağrılıcak fonksiyon, ikinci parametre hangi attribute değişikliğinde bu fonksiyon çağrılsın (bu fonksiyonun tetiklenmesini sağlayan dependencyler ne olsun).*/
         setError(undefined)
@@ -21,7 +22,7 @@ const LoginPage = (props) => {
             password : password,
         };
         setError(undefined)
-        const {history,dispatch} = props
+        const {history} = props
         const {push} = history                                                                       //object destructuring yaparak push = props.history.push yapmış olduk.
         try {
             await dispatch(loginHandler(credentials))                                                     //hem api call yapıp hem de redux actionu yaptık.(Asenkron hareket olduğu içi thunk kullandık)
@@ -30,11 +31,12 @@ const LoginPage = (props) => {
             setError(apiErr.response.data.message)
         }
     }
-    const {pendingApiCall} = props
+    const pendingApiCall = useApiProgress("/api/auth")                                                       //kendi hookumuzu tanımlamış olduk.
     const loginButtonEnabled = username && password;
 
     return (
         <div className="container w-50">
+
             <form className={""}>
                 <h1 className={"text-center"}>Login</h1>
                 <YSKInput label={"Username"} onChange={ (event) => setUsername(event.target.value) } ></YSKInput>                      {/*input içerisindeki değeri username e ata.*/}
@@ -47,16 +49,7 @@ const LoginPage = (props) => {
         </div>
     );
 }
-
-const LoginPageWithApiProgress = withApiProgress(LoginPage,"/api/auth")   //apiProgress componenti userginup componenti içine ekledik. sarmalama yapmamış olduk.
-/*const mapDispatchToProps = (dispatch) => {
-    return {
-        onLoginSuccess : (authState) => {
-            return dispatch(loginSuccess(authState))
-    }
-    }
-}*/
-export default connect()(LoginPageWithApiProgress);
+export default LoginPage
 
 
 
@@ -64,6 +57,12 @@ export default connect()(LoginPageWithApiProgress);
 
 
 
+
+
+
+
+/*const LoginPageWithApiProgress = withApiProgress(LoginPage,"/api/auth")   //apiProgress componenti login componenti içine ekledik.
+export default (LoginPageWithApiProgress);*/
 
 //normalde burda tanımlamıştık ama hem loginde hem signup da kullandığımız için ortak bi yerden çekicez. ApiProgress componenti oluşturduk.
 /*componentDidMount() {  //interceptors backend de request response esnasında yapılacak işler için vardır.
