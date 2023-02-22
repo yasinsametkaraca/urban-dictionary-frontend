@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import YSKInput from "../components/YSKInput";
-import {useApiProgress} from "../shared/ApiProgress";
+import {useApiProgress} from "../shared/useApiProgress";
 import { useDispatch} from "react-redux"
 import {loginHandler} from "../store/authActions";
 
@@ -31,7 +31,7 @@ const LoginPage = (props) => {
             setError(apiErr.response.data.message)
         }
     }
-    const pendingApiCall = useApiProgress("/api/auth")                                                       //kendi hookumuzu tanımlamış olduk.
+    const pendingApiCall = useApiProgress("post","/api/auth")                                                       //kendi hookumuzu tanımlamış olduk.
     const loginButtonEnabled = username && password;
 
     return (

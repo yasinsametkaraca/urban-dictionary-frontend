@@ -1,5 +1,5 @@
 import * as ACTIONS from "./Constants"
-import {login,signUp} from "../services/UserService";
+import { login, signUp} from "../services/UserService";
 
 export const logoutSuccess = () => {
     return {  //burda yaptığımız action reducer a düşmelidir.
@@ -12,7 +12,6 @@ export const loginSuccess = (authState) => {
         payload:authState
     }
 }
-
 export const loginHandler = (credentials) => {                                   //asenkron olduğundan thunk i configureStoreda import ettik.
     return async (dispatch) => {
         const response = await login(credentials)

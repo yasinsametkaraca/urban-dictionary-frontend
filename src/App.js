@@ -1,5 +1,5 @@
 import React from 'react';
-/*import 'semantic-ui-css/semantic.min.css'*/
+import 'semantic-ui-css/semantic.min.css'
 import UserSignupPage from "./pages/UserSignupPage";
 import LoginPage from "./pages/LoginPage";
 import HomePage from "./pages/HomePage";
@@ -7,6 +7,7 @@ import { Route, Redirect, Switch, HashRouter} from "react-router-dom";
 import TopBarComp from "./components/TopBarComp";
 import userPage from "./pages/UserPage";
 import { useSelector} from "react-redux";
+import 'bootstrap/dist/css/bootstrap.css';
 
 const App = () => {
 

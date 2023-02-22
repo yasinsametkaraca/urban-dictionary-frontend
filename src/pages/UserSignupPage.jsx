@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import YSKInput from "../components/YSKInput";
-import {useApiProgress} from "../shared/ApiProgress";
+import {useApiProgress} from "../shared/useApiProgress";
 import {signUpHandler} from "../store/authActions";
 import {useDispatch} from "react-redux";
 
@@ -53,7 +53,10 @@ const UserSignupPage = (props) => {
 
     /*const usernameError= errors.username*/
     const {username:usernameError,displayName:displayNameError,password:passwordError} = errors                  //username i usernameError değişkeniyle kullanacağımızı belirtiyoruz.
-    const pendingApiCall = useApiProgress("/api/users")
+    const pendingApiCallSignUp = useApiProgress("post","/api/users")
+    const pendingApiCallLogin = useApiProgress("post","/api/auth")
+    const pendingApiCall = pendingApiCallLogin || pendingApiCallSignUp
+
     let passwordRepeatError;                                                                                     //render öncesi passwordErroru yakaladık. tekrar terkar render edilmesini istemedik.
         if(form.password!==form.passwordRepeat){
             passwordRepeatError = "Passwords do not match"
