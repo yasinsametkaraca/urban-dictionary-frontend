@@ -5,7 +5,7 @@ import {useApiProgress} from "../shared/useApiProgress";
 import {useParams} from "react-router-dom";
 import Loading from "../components/Loading";
 
-const MyComponent = (props) => {
+const UserPage = (props) => {
     const [user, setUser] = useState({});
     const [errorNotFound, setErrorNotFound] = useState(false);
     const {username} = useParams() //router username (url içindeki)
@@ -45,4 +45,4 @@ const MyComponent = (props) => {
     );
 };
 
-export default MyComponent;
+export default UserPage;

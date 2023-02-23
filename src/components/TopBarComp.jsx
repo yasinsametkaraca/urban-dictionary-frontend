@@ -13,7 +13,7 @@ const TopBarComp = (props) => {
     })
     const {username,isLoggedIn} = reduxState
 
-    const dispatch = useDispatch()                                                                        //reduxtan actionu çektik. bunun için useDispatch kullandık.
+    const dispatch = useDispatch();                                                                        //reduxtan actionu çektik. bunun için useDispatch kullandık.
     const onLogoutSuccess = () => {dispatch(logoutSuccess())}
 
     let links = (
@@ -50,24 +50,3 @@ const TopBarComp = (props) => {
     )
 }
 export default TopBarComp;
-
-
-
-
-
-
-
-/*const mapStateToProps = (store) => {
-    return {
-        isLoggedIn: store.isLoggedIn,
-        username: store.username
-    }
-}
-const mapDispatchToProps = dispatch => {   //direk kullanmak için.
-    return {
-        onLogoutSuccess : () => {
-            return dispatch(logoutSuccess())
-        }
-    }
-}
-export default connect(mapStateToProps,mapDispatchToProps)(TopBarComp) ;*/

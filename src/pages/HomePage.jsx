@@ -2,11 +2,9 @@ import React from 'react';
 import UserListComp from "../components/UserListComp";
 import {Grid} from "semantic-ui-react";
 
-const MyComponent = () => {
+const HomePage = () => {
     return (
         <div className={"container"}>
-
-
             <Grid>
                 <Grid.Row>
                     <Grid.Column width={12}>
@@ -20,5 +18,4 @@ const MyComponent = () => {
         </div>
     );
 };
-
-export default MyComponent;
+export default HomePage;

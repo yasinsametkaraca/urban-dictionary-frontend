@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {useParams} from "react-router-dom"
 import {useSelector} from "react-redux";
-import defaultProfilePicture from "../assets/Profile.png";
 import {MdOutlineCancel} from "react-icons/md";
 import {AiOutlineSave,AiOutlineEdit } from "react-icons/ai";
 import YSKInput from "./YSKInput";
@@ -34,6 +33,7 @@ const ProfileCard = (props) => {
     useEffect(()=>{
         if(!inEditMode){
             setUpdatedDisplayName(undefined);
+            setNewImage(undefined)
         }else {
             setUpdatedDisplayName(user.displayName)
         }
@@ -42,7 +42,8 @@ const ProfileCard = (props) => {
 
     const saveDisplayName = async () => {
         const body = {
-            displayName: updatedDisplayName
+            displayName: updatedDisplayName,
+            image: newImage?.split(",")[1]
         };
         try {
             const response = await updateUserByUsername(user.username,body);
@@ -52,11 +53,10 @@ const ProfileCard = (props) => {
     }
     const pendingApiCall = useApiProgress("put","/api/users/"+user.username)
 
-    let imageSource = defaultProfilePicture
-    if(user.image){
-        imageSource = user.image
-    }
     const onChangeFile = (e) => {
+        if(e.target.files.length<1){
+            return; //cancel olduğunda undefined olmasın diye.
+        }
         const file = e.target.files[0];
         const fileReader = new FileReader();
         fileReader.onloadend = () =>{
@@ -68,7 +68,7 @@ const ProfileCard = (props) => {
     return (
         <div className="card shadow">
             <div className={"text-center card-header shadow"}>
-                <ProfileImageComp width={"220"} height={"220"} src={imageSource} alt={user.displayName} ></ProfileImageComp>
+                <ProfileImageComp className={"rounded-circle"} width={"200"} height={"200"} image={user.image} newimage={newImage} alt={user.displayName} ></ProfileImageComp>
             </div>
             <div className={"text-center card-body shadow"}>
                 { !inEditMode &&

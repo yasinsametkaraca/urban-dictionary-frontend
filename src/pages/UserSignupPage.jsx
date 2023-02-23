@@ -16,7 +16,7 @@ const UserSignupPage = (props) => {
         displayName:undefined,
         password:undefined,
     });
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
 
     const onChange = event => {                                                                             //her input değişikliğinde bu fonksiyon çalışıcak
         const {name,value} = event.target;                                                                  //object destructuring yaparak name e event.target.name ve value a event.target.value vermiş olduk.}
@@ -50,7 +50,6 @@ const UserSignupPage = (props) => {
             }
         }
     }
-
     /*const usernameError= errors.username*/
     const {username:usernameError,displayName:displayNameError,password:passwordError} = errors                  //username i usernameError değişkeniyle kullanacağımızı belirtiyoruz.
     const pendingApiCallSignUp = useApiProgress("post","/api/users")
