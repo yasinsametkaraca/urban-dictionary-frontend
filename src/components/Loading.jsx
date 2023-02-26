@@ -1,15 +1,25 @@
 import React from 'react';
-import {Dimmer, Image, Loader, Segment} from "semantic-ui-react";
 
-const MyComponent = () => {
+const Loading = () => {
     return (
-        <Segment>
-            <Dimmer inverted active>
-                <Loader inverted>Loading</Loader>
-            </Dimmer>
-            <Image src='https://react.semantic-ui.com/images/wireframe/short-paragraph.png' />
-        </Segment>
+        <div className="d-flex justify-content-center">
+            <div className="spinner-grow spinner-grow-sm text-primary m-2" role="status">
+                <span className="sr-only"></span>
+            </div>
+            <div className="spinner-grow spinner-grow-sm text-secondary m-2" role="status">
+                <span className="sr-only"></span>
+            </div>
+            <div className="spinner-grow spinner-grow-sm text-success m-2" role="status">
+                <span className="sr-only"></span>
+            </div>
+            <div className="spinner-grow spinner-grow-sm text-danger m-2" role="status">
+                <span className="sr-only"></span>
+            </div>
+            <div className="spinner-grow spinner-grow-sm text-info m-2" role="status">
+                <span className="sr-only"></span>
+            </div>
+        </div>
     );
 };
 
-export default MyComponent;
+export default Loading;

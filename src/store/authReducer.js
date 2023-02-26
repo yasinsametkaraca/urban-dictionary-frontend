@@ -1,4 +1,3 @@
-
 import * as ACTIONS from "./Constants"
 
 const defaultState = {
@@ -8,7 +7,6 @@ const defaultState = {
     image:undefined,
     password:undefined
 }
-
 const authReducer = (state={...defaultState},action) => {         //reducer 0 son state i ve action u alarak güncel state i üretip döner
     if(action.type===ACTIONS.LOGOUT_SUCCESS){
         return defaultState
@@ -17,8 +15,13 @@ const authReducer = (state={...defaultState},action) => {         //reducer 0 so
             ...action.payload,
             isLoggedIn: true
         }
+    }else if(action.type===ACTIONS.UPDATE_SUCCESS){
+        return {
+            ...state,
+            displayName: action.payload.displayName,
+            image: action.payload.image
+        }
     }
     return state
 }
-
 export default authReducer;

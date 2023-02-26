@@ -12,6 +12,15 @@ export const loginSuccess = (authState) => {
         payload:authState
     }
 }
+export const updateSuccess = ({displayName,image}) => {
+    return {
+        type: ACTIONS.UPDATE_SUCCESS,
+        payload: {
+            displayName,
+            image
+        }
+    }
+}
 export const loginHandler = (credentials) => {                                   //asenkron olduğundan thunk i configureStoreda import ettik.
     return async (dispatch) => {
         const response = await login(credentials)

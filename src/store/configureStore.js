@@ -27,13 +27,12 @@ const configureStore = () => {
     const initialState = getStateFromStorage();
     setAuthorizationHeader(initialState);                                                                                       // set authorization header yapıyoruz. login olan kullanıcıyı Authorization header içerisinde yolluyoruz.
     const reduxComposeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-    const store = createStore(authReducer,initialState,reduxComposeEnhancers(applyMiddleware(thunk)));                           //birinci parametre reducer,ikinci parametre başlangıç state i, üçüncü parametre asenktron actionlar için thunk.
+    const store = createStore(authReducer,initialState,reduxComposeEnhancers(applyMiddleware(thunk)));                          //birinci parametre reducer,ikinci parametre başlangıç state i, üçüncü parametre asenktron actionlar için thunk.
 
-    store.subscribe(()=>{                           //storeda her değişim olduğunda burası çağrılır.
-        secureLs.set("auth-data",store.getState())
+    store.subscribe(()=>{                                                                                                //storeda her değişim olduğunda burası çağrılır.
+        secureLs.set("auth-data",store.getState())                                                                              //storadaki her değişim localStorage a yansır.
         setAuthorizationHeader(store.getState())                                                                                //storadaki her değişikliği authorization headera yansıttık.
     })
-    
     return store;
 }
-export default configureStore
+export default configureStore;

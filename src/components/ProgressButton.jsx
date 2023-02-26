@@ -9,5 +9,4 @@ const ProgressButton = props => {
         </button>
     );
 };
-
 export default ProgressButton;
