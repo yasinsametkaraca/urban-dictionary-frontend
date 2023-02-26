@@ -3,10 +3,13 @@ import {getEntries} from "../services/EntryService";
 import EntryItemComp from "./EntryItemComp";
 import {useApiProgress} from "../shared/useApiProgress";
 import Loading from "./Loading";
+import {useParams} from "react-router-dom";
 
 const EntryFeedComp = () => {
     const [entryPage, setEntryPage] = useState({content: [], last: true, number: 0});  //page şeklinde yaptım backendi.
-    const pendingApiCall = useApiProgress("get","/api/entries")
+    const {username} = useParams()                                                                  //url içerisindeki usernamedir. Anasayfada undefined usersayfada username neyse odur.
+    const path = username ? `/api/users/${username}/entries?page=` : "/api/entries?page=";      //username varsa undefined değilse yani UserPage içindeysek bu pathi dinlicez -> /api/users/${username}/entries?page=
+    const pendingApiCall = useApiProgress("get",path)
 
     useEffect(() => {
         loadEntries();
@@ -14,7 +17,7 @@ const EntryFeedComp = () => {
     const loadEntries = async (page) => {
         if(pendingApiCall){return;}                                                         //bunu yapmamızın sebebi üst üste istek atmayı engelemek.
         try {
-            const response = await getEntries(page)
+            const response = await getEntries(username,page)
             setEntryPage({
                 ...response.data,
                 content: [...entryPage.content,...response.data.content]

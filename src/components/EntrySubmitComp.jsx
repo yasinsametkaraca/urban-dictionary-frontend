@@ -6,9 +6,10 @@ import {postEntry} from "../services/EntryService";
 import {signUpHandler} from "../store/authActions";
 import {useApiProgress} from "../shared/useApiProgress";
 import ProgressButton from "./ProgressButton";
+import {Link} from "react-router-dom";
 
 const EntrySubmitComp = () => {
-    const {image,displayName} = useSelector(state => ({image: state.image, displayName: state.displayName}))
+    const {image,displayName,username} = useSelector(state => ({image: state.image, displayName: state.displayName, username: state.username}))
     const [entry,setEntry] = useState({word: "", definition: "", sentence: "",});
     const [errors, setErrors] = useState({word: undefined, definition: undefined, sentence: undefined,});
     const [focused, setFocused] = useState(false);
@@ -50,8 +51,10 @@ const EntrySubmitComp = () => {
     return (
         <div className={"card p-3"}>
             <div className={"d-flex"}>
-                <ProfileImageComp image={image} width={"26"} height={"26"} className={"rounded-circle"}></ProfileImageComp>
-                <p className={"p-0 mx-2"}>{displayName}</p>
+                <ProfileImageComp image={image} width={"36"} height={"36"} className={"rounded-circle m-1 "}></ProfileImageComp>
+                <div className={"flex-fill m-auto px-2 "}>
+                    <Link style={{ textDecoration: 'none' }} to={`/user/${username}`}><h5>{displayName}</h5></Link>
+                </div>
             </div>
             <YSKInput
                 placeholder={"Word"}

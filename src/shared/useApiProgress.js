@@ -1,14 +1,19 @@
 import { useEffect, useState} from 'react';
 import axios from "axios";
 
-export const useApiProgress = (apiMethod,apiPath) => {                                                                                      //Kendi hookumuzu yaptık. useApiProgress diyerek login ve signup da kullandık.
+export const useApiProgress = (apiMethod, apiPath, strictPath) => {                                                             //Kendi hookumuzu yaptık. useApiProgress diyerek login ve signup da kullandık. strictPath in mantığı çakışmaları önlemektir. startWith olmadan direk o path olsun istersek kullanırız.
     const [pendingApiCall, setPendingApiCall] = useState(false);
 
     useEffect(() => {                                                                                                       //useApiProgress component ekrana gelir gelmez eusEffect çağrılır. Sanki componentDidMount gibi çalışır.
         let requestInterceptor,responseInterceptor;
 
         const updatePendingApiCall = (method,url,inProgress) =>{
-            if(url.startsWith(apiPath) && method === apiMethod ){                                                                                                      //path e göre davranış göstericek yoksa bütün tanımlı olan yerlerde kullanılırdı.
+            if(method !== apiMethod){
+                return;
+            }
+            if(strictPath && url === apiPath){                                                                                  //strictPath true ise verdiğimiz apiPath ile birebir aynı olsun isteriz.
+                setPendingApiCall(inProgress);
+            }else if(!strictPath && url.startsWith(apiPath)){                                                                                                      //path e göre davranış göstericek yoksa bütün tanımlı olan yerlerde kullanılırdı.
                 setPendingApiCall(inProgress);
             }
         }
@@ -34,7 +39,7 @@ export const useApiProgress = (apiMethod,apiPath) => {                          
         return function unMount(){                                                                                                  //bu yaptığımız iş yani useEffect içerisinde return etmemiz componentWillUnmount işlemine denk gelmektedir. yani component ekrandan çıktğı anda devreye girer.
             unSignUpInterceptors();
         }
-    },[apiPath,apiMethod]);
+    },[apiPath,apiMethod,strictPath]);
 
     return pendingApiCall;
 }
