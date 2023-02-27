@@ -18,7 +18,7 @@ const EntryItemComp = ({entry}) => {
                     <span>{formattedTime}</span>
                 </div>
             </div>
-            <div className={"pt-4"}>{definition}</div><hr/>
+            <div className={"pt-4"}>{definition}</div><hr className={"d-flex mx-lg-5"}/>
             <div>{sentence}</div>
         </div>
     );
