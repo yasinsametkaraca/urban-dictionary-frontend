@@ -23,3 +23,7 @@ export const getNewEntries = (id,username) => {
     const path = username ? `/api/users/${username}/entries/${id}?direction=after` : `/api/entries/${id}?direction=after`;
     return axios.get(path);                                                                                             //verilen id den sonraki id de olan entryleri döner.
 }
+
+export const postEntryAttachment = (attachment) => {
+    return axios.post("/api/entry-attachments",attachment);
+}

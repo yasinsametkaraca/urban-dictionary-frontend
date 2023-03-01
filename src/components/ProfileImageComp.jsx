@@ -6,7 +6,7 @@ const ProfileImageComp = props => {
 
     let imageSource = defaultPicture;
     if (image) {
-        imageSource = "images/"+ image;
+        imageSource = "images/profiles/"+ image;
     }
     return (
         <img
