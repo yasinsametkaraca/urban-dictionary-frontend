@@ -27,3 +27,7 @@ export const getNewEntries = (id,username) => {
 export const postEntryAttachment = (attachment) => {
     return axios.post("/api/entry-attachments",attachment);
 }
+
+export const deleteEntry = (id) => {
+    return axios.delete("/api/entries/"+id);
+}

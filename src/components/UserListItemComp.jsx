@@ -8,7 +8,7 @@ const UserListItemComp = (props) => {
     const {user} = props
     let imageSource = defaultProfilePicture
     if(user.image){
-        imageSource = "images/"+ user.image
+        imageSource = "images/profiles/"+ user.image
     }
     return (
             <List.Item>

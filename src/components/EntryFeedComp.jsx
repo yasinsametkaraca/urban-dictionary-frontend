@@ -4,7 +4,6 @@ import EntryItemComp from "./EntryItemComp";
 import {useApiProgress} from "../shared/useApiProgress";
 import Loading from "./Loading";
 import {useParams} from "react-router-dom";
-import async from "async";
 
 const EntryFeedComp = () => {                                                                            //bu component hem UserPage de o usera ait olan entryler için hem de HomePage deki tüm entrylerin load edilmesi için yapılmıştır.
     const [entryPage, setEntryPage] = useState({content: [], last: true, number: 0});           //page şeklinde yaptım backendi.
@@ -70,6 +69,12 @@ const EntryFeedComp = () => {                                                   
         setNewEntryCount(0);
     }
 
+    const onDeleteEntrySuccess = (id) => {  //delete başarılır dönerse
+        setEntryPage({
+            ...entryPage,
+            content: entryPage.content.filter(entry => entry.id !== id)
+        })
+    }
 
     if(entryPage.content.length === 0){
         return (<div className={"text-center m-1 alert alert-secondary"}>{initialEntryLoadProgress ? <Loading/> : "There are no entries." }</div>)
@@ -87,6 +92,7 @@ const EntryFeedComp = () => {                                                   
             {
                 entryPage.content.map((entry => (
                     <EntryItemComp
+                        onDeleteEntrySuccess={onDeleteEntrySuccess}
                         key={entry.id}
                         entry={entry}
                     ></EntryItemComp>
@@ -99,7 +105,8 @@ const EntryFeedComp = () => {                                                   
                     className={"text-center m-2 alert alert-primary"}
                 >
                     {loadOldEntriesProgress ? <Loading/> : "Load Old Entry." }
-                </div>}                                                                         {/*eğer son sayfada değilsek burası çalışır. Last bize backendden döner page sayesinde*/}
+                </div>}
+            {/*eğer son sayfada değilsek burası çalışır. Last bize backendden döner page sayesinde*/}
         </div>
     );
 };
