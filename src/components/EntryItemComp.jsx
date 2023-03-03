@@ -59,11 +59,11 @@ const EntryItemComp = ({entry,onDeleteEntrySuccess}) => {
                    setVisible={setOpenDeleteConfirm}
                    modalTitle="Delete Entry"
                    pendingApiCall={pendingApiCall}
+                   confirmButtonText={"Delete"}
                    onConfirm = {onClickDeleteEntry}
                    modalBody={
-                        <div>
-                            <div><strong>Are you sure you want to delete?</strong></div>
-                            <span>{word}</span>
+                        <div className={"d-flex"}>
+                            <div><strong>Are you sure you want to delete the word {word}?</strong></div>
                         </div>}>
             </Modal>
         </>

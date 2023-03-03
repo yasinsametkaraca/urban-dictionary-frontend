@@ -1,7 +1,7 @@
 import React from 'react';
 import ProgressButton from "./ProgressButton";
 
-function Modal({visible,setVisible,onConfirm,modalBody,modalTitle,pendingApiCall}) {
+function Modal({visible,setVisible,onConfirm,modalBody,modalTitle,pendingApiCall,confirmButtonText}) {
 
     let className = "modal fade"
     if(visible)
@@ -17,9 +17,9 @@ function Modal({visible,setVisible,onConfirm,modalBody,modalTitle,pendingApiCall
                         {modalBody}
                     </div>
                     <div className="modal-footer">
-                        <button type="button" className="btn btn-secondary" disabled={pendingApiCall} onClick={() => setVisible(false)}>Close</button>
+                        <button type="button" className="btn btn-secondary" disabled={pendingApiCall} onClick={() => setVisible(false)}>Cancel</button>
                         <ProgressButton disabled={pendingApiCall}
-                                        text={"Delete"}
+                                        text={confirmButtonText}
                                         pendingApiCall={pendingApiCall}
                                         className="btn btn-danger"
                                         onClick={() => onConfirm()}

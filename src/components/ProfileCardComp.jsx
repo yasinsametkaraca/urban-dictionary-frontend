@@ -1,14 +1,16 @@
 import React, {useEffect, useState} from 'react';
-import {useParams} from "react-router-dom"
+import {useHistory, useParams} from "react-router-dom"
 import {useDispatch, useSelector} from "react-redux";
 import {MdOutlineCancel} from "react-icons/md";
 import {AiOutlineSave,AiOutlineEdit } from "react-icons/ai";
 import YSKInput from "./YSKInput";
-import {updateUserByUsername} from "../services/UserService";
+import {deleteUserByUsername, updateUserByUsername} from "../services/UserService";
 import {useApiProgress} from "../shared/useApiProgress";
 import ProgressButton from "./ProgressButton";
 import ProfileImageComp from "./ProfileImageComp";
-import {updateSuccess} from "../store/authActions";
+import {logoutSuccess, updateSuccess} from "../store/authActions";
+import {AiOutlineUserDelete} from "react-icons/ai";
+import Modal from "./Modal";
 
 
 const ProfileCard = (props) => {
@@ -24,6 +26,10 @@ const ProfileCard = (props) => {
     const [newImage, setNewImage] = useState()
     const [validationErrors, setValidationErrors] = useState({});                              //backendden dönen hata mesajlarını bu state de tutucaz.
     const dispatch = useDispatch();
+    const [modalVisible, setModalVisible] = useState(false);
+    const pendingApiCall = useApiProgress("put","/api/users/"+user.username);
+    const pendingApiCallUserDelete = useApiProgress("delete",`/api/users/${loggedInUsername}`,true);
+    const history = useHistory()
 
     useEffect(() => {
         setUser(props.user)
@@ -60,7 +66,7 @@ const ProfileCard = (props) => {
             setValidationErrors(err.response.data.validationErrors);
         }
     }
-    const pendingApiCall = useApiProgress("put","/api/users/"+user.username)
+
 
     const onChangeFile = (e) => {
         if(e.target.files.length<1){
@@ -74,6 +80,13 @@ const ProfileCard = (props) => {
         fileReader.readAsDataURL(file)
     }
 
+    const onClickDeleteAccount = async () => {
+        await deleteUserByUsername(loggedInUsername);
+        setModalVisible(false);
+        dispatch(logoutSuccess()); //hesabı sildikten sonra logout olundu.
+        history.push("/");
+    }
+
     return (
         <div className="card shadow">
             <div className={"text-center card-header shadow"}>
@@ -84,8 +97,18 @@ const ProfileCard = (props) => {
                     <>
                         <h1>{user.displayName}</h1>
                         <p className="title">{user.username}</p>
-                        {editable && <button onClick={() => setInEditMode(true)} className="btn btn-success d-inline-flex">
-                            <AiOutlineEdit size={21}></AiOutlineEdit>Edit</button>}
+                        {editable &&
+                            <div>
+                                <div>
+                                    <button onClick={() => setInEditMode(true)} className="btn btn-success d-inline-flex px-2 py-1"><AiOutlineEdit size={21}></AiOutlineEdit>Edit</button>
+                                </div>
+                                <div className={"py-3"}>
+                                    <button onClick={() => setModalVisible(true)} className="btn btn-danger d-inline-flex px-2 py-1"><AiOutlineUserDelete size={21}></AiOutlineUserDelete>
+                                        Delete My Account
+                                    </button>
+                                </div>
+                            </div>
+                        }
                     </>
                 }
                 {inEditMode && (
@@ -111,6 +134,18 @@ const ProfileCard = (props) => {
                         </div>
                     )}
             </div>
+            <Modal
+                   visible={modalVisible}
+                   setVisible={setModalVisible}
+                   confirmButtonText={"Delete"}
+                   modalTitle="Delete Account"
+                   pendingApiCall={pendingApiCallUserDelete}
+                   onConfirm = {onClickDeleteAccount}
+                   modalBody={
+                       <div>
+                           <div><strong>Are you sure you want to delete your account?</strong></div>
+                       </div>}>
+            </Modal>
         </div>
     );
 }

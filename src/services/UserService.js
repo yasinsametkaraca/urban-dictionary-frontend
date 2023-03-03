@@ -23,4 +23,6 @@ export const getUserByUsername = (username) => {
 export const updateUserByUsername = (username,body) => {
     return axios.put(`/api/users/${username}`,body);
 }
-
+export const deleteUserByUsername = (username) => {
+    return axios.delete(`/api/users/${username}`);
+}
