@@ -3,16 +3,16 @@ import axios from "axios";
 export const signUp = (body) => {
     return axios.post("/api/users",body)
 }
-export const login = (creds) => {
-    return axios.post("/api/auth",{},{auth: creds})
+export const login = (credentials) => {  //username ve password yolluyoruz.
+    return axios.post("/api/auth",credentials)
 }
 export const getAllUsers = (page=0,size=8) => {
     return axios.get(`/api/users?page=${page}&size=${size}`)
 }
-export const setAuthorizationHeader = ({username,password,isLoggedIn}) => {                                                        //login olan kullanıcının bilgisi users tablosunda olmucak. bunu istek yollarken header kısmında ayarlıcaz.
+export const setAuthorizationHeader = ({isLoggedIn, token}) => {
     if(isLoggedIn){
-        const authorizationHeaderValue = `Basic ${btoa(username +':'+password)}`  //base64 e çevirdik.
-        axios.defaults.headers['Authorization'] = authorizationHeaderValue;
+        const authorizationHeaderValue = `Bearer ${token}`
+        axios.defaults.headers['Authorization'] = authorizationHeaderValue;  //gönderdiğimiz her istekte bu token gidicek.
     }else{
         delete axios.defaults.headers['Authorization'];
     }
