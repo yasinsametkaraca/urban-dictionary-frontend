@@ -1,9 +1,14 @@
 import * as ACTIONS from "./Constants"
-import { login, signUp} from "../services/UserService";
+import { login, signUp,logout} from "../services/UserService";
 
 export const logoutSuccess = () => {
-    return {  //burda yaptığımız action reducer a düşmelidir.
-        type: ACTIONS.LOGOUT_SUCCESS,
+    return async (dispatch) => {  //thunk bu fonksiyonu çağırıcak ve reduxun dispatch fonksiyonunu buraya vericek.
+        try {
+            await logout();
+        }catch (e){}
+        dispatch({
+            type: ACTIONS.LOGOUT_SUCCESS,
+        })
     }
 }
 export const loginSuccess = (authState) => {
